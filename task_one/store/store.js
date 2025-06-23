@@ -8,4 +8,7 @@ class Database {
     }
 }
 
-module.exports = Database
+// Singleton pattern 
+const databaseInstance = new Database()
+
+module.exports = databaseInstance
