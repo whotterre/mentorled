@@ -53,4 +53,30 @@ const createNewQuote = (req, res) => {
     }
 }
 
-module.exports = { createNewQuote }
+/*
+    * Controller Function to get all quotes
+    * This function retrieves all quotes from the database and returns them in a JSON response.
+    * @param {Object} req - The request object containing the quote and author
+    * @param {Object} res - The response object to send back the result
+    * @returns {Object} - Returns a JSON response with the status and message
+*/
+const getAllQuotes = (req, res) => {
+    try {
+        if (db.items.length === 0) {
+            return res.status(404).json({
+                "error": "No quotes found."
+            })
+        }
+        return res.status(200).json({
+            "message": "Quotes retrieved successfully",
+            "quotes": db.items
+        })
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({
+            "error": "Something went really wrong with the server. We're working on this..."
+        })
+    }
+}
+
+module.exports = { createNewQuote,getAllQuotes }
