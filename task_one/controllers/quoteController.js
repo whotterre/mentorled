@@ -79,4 +79,17 @@ const getAllQuotes = (req, res) => {
     }
 }
 
-module.exports = { createNewQuote,getAllQuotes }
+const healthCheck = (req, res) => {
+    try {
+        return res.status(200).json({
+            "message": "Server is running smoothly"
+        })
+    } catch (e) {
+        console.log(e)
+        return res.status(500).json({
+            "error": "Something went really wrong with the server. We're working on this..."
+        })
+    }
+}
+
+module.exports = { createNewQuote, getAllQuotes, healthCheck }
