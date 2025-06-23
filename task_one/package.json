@@ -2,7 +2,7 @@
   "name": "task_one",
   "version": "1.0.0",
   "description": "## Problem Statement Brief: Create a REST API with two endpoints: GET /quotes – returns a list of quotes POST /quotes – adds a new quote (basic validation required) Use an in-memory array or file-based storage. Include Postman collection or cURL instructions.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "jest",
     "start": "node index.js"
