@@ -1,0 +1,16 @@
+{
+  "name": "task_one",
+  "version": "1.0.0",
+  "description": "## Problem Statement Brief: Create a REST API with two endpoints: GET /quotes – returns a list of quotes POST /quotes – adds a new quote (basic validation required) Use an in-memory array or file-based storage. Include Postman collection or cURL instructions.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
