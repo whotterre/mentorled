@@ -33,7 +33,7 @@ const createNewQuote = (req, res) => {
             })
         }
         const newQuote = {
-            "ID": db.getLastID,
+            "ID": db.getLastID(),
             "Author": author,
             "Quote": quote
         }

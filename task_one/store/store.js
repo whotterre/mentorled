@@ -4,7 +4,7 @@ class Database {
     }
     // Gets the last ID of the last quote that was added
     getLastID(){
-        return this.items.length > 0 ? this.items.length - 1 : 0;
+        return this.items.length > 0 ? this.items.length : 0;
     }
 }
 
