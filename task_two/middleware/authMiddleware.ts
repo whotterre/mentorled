@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
 
+dotenv.config()
 
+/*
+    Authentication middleware
+*/
 const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     // Check for the existence of auth header
     const authHeader = req.headers["authorization"]
