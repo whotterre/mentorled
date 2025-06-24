@@ -24,7 +24,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Connect to database
 (async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(process.env.MONGO_URI!);
         console.info("Connected to MongoDB database successfully!")
     } catch (error) {
         console.error("Error connecting to MongoDB:", error);
