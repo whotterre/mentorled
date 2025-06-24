@@ -4,7 +4,7 @@ info:
   description: An API to test authentication knowledge via JWTs
   version: 1.0.0
 servers: 
-- url: http://mentorled_task_two.onrender.com/api/v1
+- url: http://mentorled-task-two.onrender.com/api/v1
 
 paths:
   /register:
