@@ -2,8 +2,10 @@
   "name": "task_two",
   "version": "1.0.0",
   "description": "## Problem Statement Brief: Build a backend system with the following endpoints: POST /register – create new user (name, email, password) POST /login – login and return token GET /profile – protected route to view user profile Use hashed passwords and JWT. Store data in a simple SQLite or MongoDB setup.",
-  "scripts": {
-    "start": "tsc --watch & nodemon dist/server.js",
+   "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "tsc --watch & nodemon dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
