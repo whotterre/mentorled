@@ -1,0 +1,187 @@
+openapi: 3.0.0
+info:
+  title: MentorLed Task Two Open API spec
+  description: An API to test authentication knowledge via JWTs
+  version: 1.0.0
+servers: 
+- url: http://mentorled_task_two.onrender.com/api/v1
+
+paths:
+  /register:
+      description: Register a new user
+      post:
+        description: Operation to register a user 
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "John Doe"
+                  email:
+                    type: string
+                    example: johndoe@gmail.com
+                  password: 
+                    type: string
+                    example: boomshakalaka
+        responses:
+          201:
+            content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "User account created successfully!"
+                      user:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: "John Doe"
+                          email:
+                            type: string
+                            example: "johndoe@gmail.com"
+            description: "On successful user creation"
+          400:
+            content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                     error:
+                        type: string
+                        example: "Name field is required to sign up"
+            description: "Missing name field"
+          500:
+            content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                     error:
+                        type: string
+                        example: "Something went really wrong on our end when you tried to sign up"
+            description: "Internal server error"
+  
+  /login:
+      description: Log in a user
+      post:
+        description: Operation to login a user 
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    example: johndoe@gmail.com
+                  password: 
+                    type: string
+                    example: boomshakalaka
+        responses:
+          200:
+            content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "User logged in successfully!"
+                      user:
+                        type: object
+                        properties:
+                          message:
+                            type: string
+                            example: "John Doe"
+                          email:
+                            type: string
+                            example: "johndoe@gmail.com"
+                          accessToken:
+                            type: string
+                            example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30"
+            description: "On successful user creation"
+          400:
+            content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                     error:
+                        type: string
+                        example: "Email field is required to sign up"
+            description: "Missing email field"
+          500:
+            content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                     error:
+                        type: string
+                        example: "Something went really wrong on our end when you tried to log in"
+            description: "Internal server error"
+            
+  /profile:
+      description: Log in a user
+      get:
+        description: Operation to get a user profile
+        responses:
+          200:
+            content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                      message:
+                        type: string
+                        example: "User profile fetched successfully!"
+                      user:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            example: "John Doe"
+                          email:
+                            type: string
+                            example: "johndoe@gmail.com"
+                          password:
+                            type: string
+                            example: "e234dsdom3k2kmdl3l43iwes9vjro44223m3n32kn5n2ksdo4"
+            description: "On successful user creation"
+          400:
+            content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                     error:
+                        type: string
+                        example: "Email field is required to sign up"
+            description: "Missing email field"
+          500:
+            content:
+                application/json:
+                  schema:
+                    type: object
+                    properties:
+                     error:
+                        type: string
+                        example: "Something went really wrong on our end when you tried to log in"
+            description: "Internal server error"
+    
+            
+          
+                       
+          
+              
+                
+        
+        
+          
+        
