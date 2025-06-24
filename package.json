@@ -1,0 +1,12 @@
+{
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/validator": "^13.15.2"
+  },
+  "dependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/dotenv": "^6.1.1",
+    "bcryptjs": "^3.0.2",
+    "dotenv": "^16.5.0"
+  }
+}

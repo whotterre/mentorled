@@ -1,10 +1,11 @@
 // Driver code for the server program
 
-const cors = require("cors")
-const router = require("./routes/routes")
-const express = require("express")
-const PORT = process.env.PORT || 8000
-const app = express()
+import cors from "cors";
+import router from "./routes/routes.js";
+import express from "express";
+
+const PORT = process.env.PORT || 8000;
+const app = express();
 
 app.use(cors())
 app.use(express.json())
