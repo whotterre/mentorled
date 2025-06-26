@@ -1,0 +1,41 @@
+// Driver code for the server program
+import cors from "cors";
+import router from "./routes/routes";
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv"
+// Swagger serve related stuff 
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
+import path from 'path';
+import { getAllPosts, getSpecificPost, createPosts, updatePost, deletePost } from "./controllers/postController";
+import { loginUser, signupUser } from "./controllers/userController";
+
+
+const PORT = process.env.PORT || 8000
+const app = express()
+
+dotenv.config()
+
+app.use(cors())
+app.use(express.json());
+// // Serve Swagger stuff on a special route
+// const swaggerDocument = YAML.load(path.join(__dirname, '../docs/specs.yml'))
+// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Connect to database
+(async () => {
+    try {
+        console.log(process.env.MONGO_URI!)
+        await mongoose.connect(process.env.MONGO_URI!);
+        console.info("Connected to MongoDB database successfully!")
+    } catch (error) {
+        console.error("Error connecting to MongoDB:", error);
+        process.exit(1)
+    }
+
+})()
+
+
+app.listen(PORT, () => {
+    console.log(`Auth API cooking on port ${PORT}`)
+})
