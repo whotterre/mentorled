@@ -5,11 +5,9 @@ import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv"
 // Swagger serve related stuff 
-import swaggerUi from 'swagger-ui-express';
-import YAML from 'yamljs';
-import path from 'path';
-import { getAllPosts, getSpecificPost, createPosts, updatePost, deletePost } from "./controllers/postController";
-import { loginUser, signupUser } from "./controllers/userController";
+// import swaggerUi from 'swagger-ui-express';
+// import YAML from 'yamljs';
+// import path from 'path';
 
 
 const PORT = process.env.PORT || 8000
@@ -19,13 +17,13 @@ dotenv.config()
 
 app.use(cors())
 app.use(express.json());
+app.use("/api/v1/", router);
 // // Serve Swagger stuff on a special route
 // const swaggerDocument = YAML.load(path.join(__dirname, '../docs/specs.yml'))
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 // Connect to database
 (async () => {
     try {
-        console.log(process.env.MONGO_URI!)
         await mongoose.connect(process.env.MONGO_URI!);
         console.info("Connected to MongoDB database successfully!")
     } catch (error) {

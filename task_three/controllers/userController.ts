@@ -9,46 +9,52 @@ dotenv.config()
 /*
     A controller function to sign up a user 
 */
+
 const signupUser = async (req: Request, res: Response) => {
-    try {
-        const { name, email, password } = req.body
+  try {
+    const { name, email, password } = req.body;
 
-        if (validator.isEmpty(name)) {
-            res.status(400).json({ "error": "Name field is required to sign up" })
-        }
-
-        if (validator.isEmpty(email)) {
-            res.status(400).json({ "error": "Email field is required to sign up" })
-        }
-        if (validator.isEmpty(password)) {
-            res.status(400).json({ "error": "Password field is required to sign up" })
-        }
-
-        // Check if user already exists
-        const userExists = await User.findOne({ email })
-        if (userExists) {
-            res.status(400).json({ "error": "User already exists with that email. Try signing up." })
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10)
-
-        const newUser = new User({
-            email,
-            name,
-            password: hashedPassword
-        })
-
-        await newUser.save()
-
-        res.status(201).json({
-            "message": "User account created successfully!",
-            "user": newUser
-        })
-    } catch (e) {
-        console.error(e)
-        res.status(500).json({ "error": "Something went really wrong on our end when you tried to sign up" })
+    // Validate required fields
+    if (!name || !email || !password) {
+     res.status(400).json({ error: "Name, email and password are required" });
     }
-}
+
+    // Validate email format
+    if (!validator.isEmail(email)) {
+     res.status(400).json({ error: "Invalid email format" });
+    }
+
+    // Check if email exists (only if email is defined)
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+     res.status(400).json({ error: "Email already in use" });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create user
+    const user = new User({
+      name,
+      email,
+      password: hashedPassword
+    });
+
+    const savedUser = await user.save();
+    
+    // Return user data (excluding password)
+    res.status(201).json({
+      id: savedUser._id,
+      name: savedUser.name,
+      email: savedUser.email
+    });
+
+  } catch (error) {
+    console.error("Signup error:", error);
+    res.status(500).json({ error: "Server error during signup" });
+  }
+};
 
 /*
     Controller function to login a user
