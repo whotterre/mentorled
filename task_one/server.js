@@ -1,10 +1,10 @@
 // Driver code for the server program
 
-import cors from "cors";
-import router from "./routes/routes.js";
-import express from "express";
-import swaggerUi from "swagger-ui-express";
-const swaggerDocument = require('../docs/specs.json');
+const cors = require("cors");
+const router = require("./routes/routes.js");
+const express = require("express");
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require('./docs/openapi.json');
 
 const PORT = process.env.PORT || 8000;
 const app = express();
