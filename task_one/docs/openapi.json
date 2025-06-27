@@ -1,0 +1,103 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Task One API",
+        "version": "1.0.0",
+        "description": "A simple API to manage quotes"
+    },
+    "paths": {
+        "/quotes/new": {
+            "post": {
+                "summary": "Create a new quote",
+                "operationId": "createQuote",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Quote"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Quote created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Quote"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid input"
+                    }
+                }
+            }
+        },
+        "/quotes": {
+            "get": {
+                "summary": "Get all quotes",
+                "operationId": "getQuotes",
+                "responses": {
+                    "200": {
+                        "description": "A list of quotes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Quote"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "An unexpected error occurred"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Quote": {
+                "type": "object",
+                "properties": {
+                    "ID": {
+                        "type": "string",
+                        "example": "12345"
+                    },
+                    "quote": {
+                        "type": "string",
+                        "example": "The only limit to our realization of tomorrow is our doubts of today."
+                    },
+                    "author": {
+                        "type": "string",
+                        "example": "Franklin D. Roosevelt"
+                    }
+                },
+                "required": [
+                    "text",
+                    "author"
+                ]
+            }
+        }
+    }
+}
