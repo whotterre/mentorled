@@ -4,6 +4,11 @@
       "title": "Mini Trello API",
       "version": "1.0.0"
     },
+    "servers": [
+      {
+        "url": "https://task-four-fbkj.onrender.com"
+      }
+    ],
     "paths": {
       "/login": {
         "post": {
