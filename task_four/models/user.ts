@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const ownerSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     "name": {
         type: String,
         required: true,
@@ -16,10 +16,10 @@ const ownerSchema = new mongoose.Schema({
     },
     "boards": {
         type: [mongoose.Types.ObjectId],
-        ref: "Task",
+        ref: "Board",
     }
 })
 
-const Owner = mongoose.model("owners", ownerSchema)
+const User = mongoose.model("Users", userSchema)
 
-export default Owner
+export default User

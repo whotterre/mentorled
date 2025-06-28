@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction, RequestHandler } from "express";
 import jwt from "jsonwebtoken"
 import dotenv from "dotenv"
 
@@ -7,7 +7,15 @@ dotenv.config()
 /*
     Authentication middleware
 */
-const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
+
+interface CustomRequest extends Request {
+    user: {
+        userId: string
+    }
+}
+
+const authMiddleware: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
+    const customReq = req as CustomRequest;
     // Check for the existence of auth header
     const authHeader = req.headers["authorization"]
     if (!authHeader) {
@@ -28,12 +36,14 @@ const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
     }
 
     // Check that the JWT is valid
-    const isValid = jwt.verify(splitToken[1], process.env.JWT_SECRET!)
-    if (!isValid) {
+    const payload = jwt.verify(splitToken[1], process.env.JWT_SECRET!)
+    if (!payload) {
         res.status(401).json({
             "error": "Invalid or malformed auth token",
         })
     }
+
+    customReq.user = payload as { userId: string }
 
     // If all goes as planned, enter ye into Valhalla!
     next()

@@ -9,17 +9,16 @@ const boardSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    "content": {
-        type: String,
-        required: true,
-        minLength: 10
-    },
-    "tasks": {
-        type: [mongoose.Types.ObjectId],
+    "tasks": [{
+        type: mongoose.Types.ObjectId,
         ref: "Task"
+    }],
+    "creator": {
+        type: mongoose.Types.ObjectId,
+        ref: "User", 
     }
 })
 
-const Board = mongoose.model("posts", boardSchema)
+const Board = mongoose.model("Board", boardSchema)
 
 export default Board

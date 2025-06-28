@@ -12,6 +12,7 @@ const taskSchema = new mongoose.Schema({
     "status": {
         type: String,
         enum: ["todo", "in-progress", "done"],
+        default: "todo",
         required: true
     },
     "board": {
@@ -21,6 +22,6 @@ const taskSchema = new mongoose.Schema({
 
 })
 
-const Task = mongoose.Model("tasks", taskSchema)
+const Task = mongoose.model("Task", taskSchema)
 
 export default Task
