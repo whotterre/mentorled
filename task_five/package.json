@@ -5,8 +5,9 @@
   "scripts": {
     "test": "jest",
     "dev": "tsc && nodemon ./dist/server.js",
-    "build": "npm install && tsc",
-    "start": "node ./dist/server.js"
+    "build": "npm install && npx prisma generate && tsc",
+    "start": "npx prisma migrate deploy && node ./dist/server.js",
+    "postinstall": "npx prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^6.10.1",
