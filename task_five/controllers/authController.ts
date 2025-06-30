@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import UserService from "../services/user.service";
 import bcrypt from "bcryptjs";
-
+import jwt from "jsonwebtoken"
 class AuthController {
     authService: UserService;
     constructor(authService: UserService) {
@@ -52,18 +52,32 @@ class AuthController {
             }
 
             // Compare password
-            const isPasswordValid = await bcrypt.compare(password, user.password);
+            const isPasswordValid = await bcrypt.compare(password, user!.password);
             if (!isPasswordValid) {
                 res.status(401).json({ message: "Invalid password" });
             }
             // Successful login
-            res.status(200).json({ message: "Login successful", user: { id: user.id, name: user.name, email: user.email } });
+            res.status(200).json({
+                message: "Login successful", user: {
+                    id: user!.userId,
+                    name: user!.name,
+                    email: user!.email
+                },
+                token: this.generateToken(user!.userId)
+            });
 
 
         } catch (error) {
             console.error("Error during login:", error);
             res.status(500).json({ message: "Internal server error" });
         }
+    }
+
+    generateToken = (userID: string): string => {
+        const token = jwt.sign({ userID }, process.env.JWT_SECRET!, {
+            expiresIn: '1h',
+        });
+        return token;
     }
 }
 

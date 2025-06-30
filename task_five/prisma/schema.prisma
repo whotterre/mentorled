@@ -1,6 +1,5 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../generated/prisma"
 }
 
 enum Priority {
@@ -15,21 +14,24 @@ datasource db {
 }
 
 model User {
-  user_id        String   @id @default(cuid())
+  userId    String   @id @default(cuid())
   email     String   @unique
+  password  String
   name      String?
-  posts     Task[]
+  tasks     Task[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Task {
-  task_id        String   @id @default(cuid())
-  title     String
-  due_date DateTime?
-  completed Boolean  @default(false)
-  priority  Priority @default(LOW)
-  user      User     @relation(fields: [task_id], references: [user_id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  taskId      String    @id @default(cuid())
+  title       String
+  dueDate     DateTime?
+  description String
+  completed   Boolean   @default(false)
+  priority    Priority  @default(LOW)
+  userId      String   @map("userId")
+  user        User      @relation(fields: [userId], references: [userId])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
