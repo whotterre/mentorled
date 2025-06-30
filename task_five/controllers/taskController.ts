@@ -7,7 +7,6 @@ interface CreateTaskDto {
     dueDate: Date;
     completed: boolean;
     priority: 'LOW' | 'MEDIUM' | 'HIGH';
-    userId: string;
 }
 
 interface CustomRequest extends Request {
@@ -51,11 +50,10 @@ class TaskController {
                 description,
                 dueDate: dueDate ? new Date(dueDate) : new Date(),
                 completed: completed || false,
-                priority: priority || 'LOW',
-                userId: userID
+                priority: priority || 'LOW'
             };
 
-            const newTask = await this.taskService.createTask(taskData);
+            const newTask = await this.taskService.createTask(taskData, userID);
             res.status(201).json({
                 "message": "Task created successfully",
                 newTask
@@ -78,7 +76,7 @@ class TaskController {
                 res.status(401).json({ error: "User not authenticated" });
             }
 
-            const tasks = await this.taskService.listAllTasks(userID);
+            const tasks = await this.taskService.listUserTasks(userID);
             res.status(200).json(tasks);
         } catch (error) {
             console.error('Get all tasks error:', error);
@@ -105,7 +103,7 @@ class TaskController {
 
             const task = await this.taskService.findTaskById(taskId, userID);
             if (!task) {
-                res.status(404).json({ error: "Task not found" });
+                res.status(404).json({ error: "Task doesn't exist for the current user"});
             }
             res.status(200).json(task);
         } catch (error) {
@@ -113,7 +111,7 @@ class TaskController {
             res.status(500).json({ error: "Failed to retrieve task" });
         }
     }
-
+    
     /**
      * Updates a task by its ID.
      * @param req - The request object containing the task ID and updated data.
@@ -126,7 +124,7 @@ class TaskController {
                 res.status(401).json({ error: "User not authenticated" });
             }
 
-            const taskId = req.params.id; // Keep as string, don't parseInt
+            const taskId = req.params.id; 
             if (!taskId) {
                 res.status(400).json({ error: "Task ID is required" });
             }
@@ -161,7 +159,7 @@ class TaskController {
                 res.status(401).json({ error: "User not authenticated" });
             }
 
-            const taskId = req.params.id; // Keep as string, don't parseInt
+            const taskId = req.params.id;
             if (!taskId) {
                 res.status(400).json({ error: "Task ID is required" });
             }

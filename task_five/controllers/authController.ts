@@ -59,11 +59,11 @@ class AuthController {
             // Successful login
             res.status(200).json({
                 message: "Login successful", user: {
-                    id: user!.userId,
+                    id: user!.user_id,
                     name: user!.name,
                     email: user!.email
                 },
-                token: this.generateToken(user!.userId)
+                token: this.generateToken(user!.user_id)
             });
 
 

@@ -8,76 +8,63 @@ interface CreateTaskDto {
     priority: 'LOW' | 'MEDIUM' | 'HIGH';
     userId: string;
 }
-// CRUD operations for tasks
-class TaskService {
-    constructor(private readonly prisma: PrismaClient) { 
-        this.prisma = prisma;
-    }
 
+class TaskService {
+    constructor(private readonly prisma: PrismaClient) {}
     /**
      * Creates a new task in the database.
      * @param data - The data for the new task.
+     * @param userId - The ID of the user creating the task.
      * @returns The created task object.
      */
-    async createTask(data: CreateTaskDto) {
+    async createTask(data: Omit<CreateTaskDto, 'userId'>, userId: string) {
         return this.prisma.task.create({
             data: {
-                title: data.title,
-                description: data.description,
-                dueDate: data.dueDate,
-                completed: data.completed,
-                priority: data.priority,
-                user: {
-                    connect: { userId: data.userId }
-                }
+                ...data,
+                user: { connect: { user_id: userId } }
             }
+        });
+    }
+    /**
+       * Finds a task by its ID.
+       * @param id - The ID of the task to find.
+       * @returns The task object if found, otherwise null.
+       */
+    async findTaskById(taskId: string, userId: string) {
+        return this.prisma.task.findUnique({
+            where: {
+                task_id: taskId,              
+                userId: userId     
+            }
+        });
+    }
+    /**
+ * Lists all tasks in the database.
+ * @returns An array of task objects.
+ */
+    async listUserTasks(userId: string) {
+        return this.prisma.task.findMany({
+            where: { userId: userId },
+            orderBy: { dueDate: 'asc' }
         });
     }
 
     /**
-     * Finds a task by its ID.
-     * @param id - The ID of the task to find.
-     * @returns The task object if found, otherwise null.
-     */
-    async findTaskById(id: string, userID: string) {
-        return this.prisma.task.findFirst({
-            where: { taskId: id},
-            include: { user: true },
-        });
-    }
-    
-    /**
-     * Lists all tasks in the database.
-     * @returns An array of task objects.
-     */
-    async listAllTasks(userID: string) {
-        return this.prisma.user.findMany({
-            where: { userId: userID },
-            include: {
-                tasks: {
-                    orderBy: { dueDate: 'asc' }, // Sort tasks by due date
-                }
-            }
-        });
-    }
+         * Updates a task by its ID.
+         * @param id - The ID of the task to update.
+         * @param data - The new data for the task.
+         * @returns The updated task object.
+         */
+    async updateTask(taskId: string, userId: string, data: Partial<CreateTaskDto>) {
+        const task = await this.findTaskById(taskId, userId);
+        if (!task) throw new Error("Task not found or access denied");
 
-    /**
-     * Updates a task by its ID.
-     * @param id - The ID of the task to update.
-     * @param data - The new data for the task.
-     * @returns The updated task object.
-     */
-    // The Partial type allows for updating only some fields of the task (interesting)
-    async updateTask(id: string, userID: string, data: Partial<CreateTaskDto>) {
         return this.prisma.task.update({
-            where: { taskId: id},
-            data: {
-                title: data.title,
-                description: data.description,
-                dueDate: data.dueDate,
-                completed: data.completed,
-                priority: data.priority,
-            }
+            where: {
+                 task_id: taskId,
+                 userId: userId
+            },
+            data
         });
     }
     /**
@@ -85,10 +72,12 @@ class TaskService {
      * @param id - The ID of the task to delete.
      * @returns The deleted task object.
      */
-    async deleteTask(id: string, userID: string) {
+    async deleteTask(taskId: string, userId: string) {
+        const task = await this.findTaskById(taskId, userId);
+        if (!task) throw new Error("Task not found or access denied");
+
         return this.prisma.task.delete({
-            where: { taskId: id },
-            include: { user: true },
+            where: { task_id: taskId }
         });
     }
 }

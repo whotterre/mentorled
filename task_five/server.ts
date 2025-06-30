@@ -6,6 +6,7 @@ import TaskController from './controllers/taskController'
 import UserService from './services/user.service'
 import TaskService from './services/task.service'
 import authMiddleware from './middleware/authMiddleware'
+import morgan from 'morgan'
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -14,7 +15,7 @@ app.use(express.json())
 
 // Database conn logic 
 const prisma = new PrismaClient()
-
+app.use(morgan('tiny'))
 // Auth Routes
 const authRouter = express.Router()
 const authService = new UserService(prisma)
@@ -29,7 +30,7 @@ const taskController = new TaskController(taskService)
 taskRouter.post('/', authMiddleware, taskController.createTask)
 taskRouter.get('/', authMiddleware, taskController.getAllTasks)
 taskRouter.get('/:id', authMiddleware, taskController.getTaskById)
-taskRouter.put('/:id', authMiddleware, taskController.updateTask)
+taskRouter.patch('/:id', authMiddleware, taskController.updateTask)
 taskRouter.delete('/:id', authMiddleware, taskController.deleteTask)
 
 app.use('/auth', authRouter)

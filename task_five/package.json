@@ -12,12 +12,16 @@
     "cors": "^2.8.5",
     "dotenv": "^17.0.0",
     "express": "^5.1.0",
+    "jest": "^30.0.3",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "sequelize-typescript": "^2.1.6"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
+    "@types/jest": "^30.0.0",
+    "@types/morgan": "^1.9.10",
     "@types/node": "^24.0.7",
     "prisma": "^6.10.1",
     "ts-node": "^10.9.2",
