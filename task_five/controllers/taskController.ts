@@ -1,3 +1,4 @@
+import validator from "validator";
 import TaskService from "../services/task.service";
 import { Request, Response } from "express";
 
@@ -44,7 +45,10 @@ class TaskController {
             if (!title || !description) {
                 res.status(400).json({ error: "Title and description are required" });
             }
-
+            // Validate date format 
+            if (!validator.isDate(dueDate)) {
+                res.status(400).json({ "error": "Invalid due date format" })
+            }
             const taskData: CreateTaskDto = {
                 title,
                 description,
@@ -72,11 +76,17 @@ class TaskController {
     getAllTasks = async (req: CustomRequest, res: Response) => {
         try {
             const userID = req.user?.userID!
+            const limitStr = req.query.limit as string | undefined;
+            const offsetStr = req.query.offset as string | undefined;
+
+            const limit = parseInt(limitStr!, 10)
+            const offset = parseInt(offsetStr!, 10)
+            
             if (!userID) {
                 res.status(401).json({ error: "User not authenticated" });
             }
 
-            const tasks = await this.taskService.listUserTasks(userID);
+            const tasks = await this.taskService.listUserTasks(userID, limit, offset);
             res.status(200).json(tasks);
         } catch (error) {
             console.error('Get all tasks error:', error);
@@ -103,7 +113,7 @@ class TaskController {
 
             const task = await this.taskService.findTaskById(taskId, userID);
             if (!task) {
-                res.status(404).json({ error: "Task doesn't exist for the current user"});
+                res.status(404).json({ error: "Task doesn't exist for the current user" });
             }
             res.status(200).json(task);
         } catch (error) {
@@ -111,7 +121,7 @@ class TaskController {
             res.status(500).json({ error: "Failed to retrieve task" });
         }
     }
-    
+
     /**
      * Updates a task by its ID.
      * @param req - The request object containing the task ID and updated data.
@@ -124,7 +134,7 @@ class TaskController {
                 res.status(401).json({ error: "User not authenticated" });
             }
 
-            const taskId = req.params.id; 
+            const taskId = req.params.id;
             if (!taskId) {
                 res.status(400).json({ error: "Task ID is required" });
             }

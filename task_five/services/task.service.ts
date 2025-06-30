@@ -42,9 +42,11 @@ class TaskService {
  * Lists all tasks in the database.
  * @returns An array of task objects.
  */
-    async listUserTasks(userId: string) {
+    async listUserTasks(userId: string, page: number, limit: number) {
         return this.prisma.task.findMany({
-            where: { userId: userId },
+            skip: (page - 1) * limit, 
+            take: limit,
+            where: { userId },
             orderBy: { dueDate: 'asc' }
         });
     }
