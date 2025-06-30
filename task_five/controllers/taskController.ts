@@ -110,7 +110,9 @@ class TaskController {
             if (!fromDate || !toDate) {
                 res.status(400).json({ error: "Both fromDate and toDate are required" });
             }
-
+            if(!validator.isDate(fromDate as string) || !validator.isDate(toDate as string)) {
+                res.status(400).json({ error: "Invalid date format" });
+            }
             const tasks = await this.taskService.filterTasksByDate(
                 fromDate as string,
                 toDate as string,
