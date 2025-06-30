@@ -81,7 +81,7 @@ class TaskController {
 
             const limit = parseInt(limitStr!, 10)
             const offset = parseInt(offsetStr!, 10)
-            
+
             if (!userID) {
                 res.status(401).json({ error: "User not authenticated" });
             }
@@ -93,7 +93,41 @@ class TaskController {
             res.status(500).json({ error: "Failed to retrieve tasks" });
         }
     }
+    /**
+     * Filters all tasks by date range for the authenticated user.
+     * @param req - The request object containing the date range.
+     * @param res - The response object to send the filtered tasks.
+     * 
+     */
+    getTasksInDateRange = async (req: CustomRequest, res: Response) => {
+        try {
+            const userID = req.user?.userID!
+            if (!userID) {
+                res.status(401).json({ error: "User not authenticated" });
+            }
 
+            const { fromDate, toDate } = req.query;
+            if (!fromDate || !toDate) {
+                res.status(400).json({ error: "Both fromDate and toDate are required" });
+            }
+
+            const tasks = await this.taskService.filterTasksByDate(
+                fromDate as string,
+                toDate as string,
+                userID,
+                parseInt(req.query.limit as string, 10) || 10,
+                parseInt(req.query.page as string, 10) || 1
+            );
+            res.status(200).json(
+                {
+                    "message": `Tasks in the range ${fromDate} to ${toDate}`,
+                    tasks
+                });
+        } catch (error) {
+            console.error('Get tasks in date range error:', error);
+            res.status(500).json({ error: "Failed to retrieve tasks in date range" });
+        }
+    }
     /**
      * Retrieves a task by its ID.
      * @param req - The request object containing the task ID.

@@ -10,7 +10,7 @@ interface CreateTaskDto {
 }
 
 class TaskService {
-    constructor(private readonly prisma: PrismaClient) {}
+    constructor(private readonly prisma: PrismaClient) { }
     /**
      * Creates a new task in the database.
      * @param data - The data for the new task.
@@ -33,8 +33,8 @@ class TaskService {
     async findTaskById(taskId: string, userId: string) {
         return this.prisma.task.findUnique({
             where: {
-                task_id: taskId,              
-                userId: userId     
+                task_id: taskId,
+                userId: userId
             }
         });
     }
@@ -44,13 +44,40 @@ class TaskService {
  */
     async listUserTasks(userId: string, page: number, limit: number) {
         return this.prisma.task.findMany({
-            skip: (page - 1) * limit, 
+            skip: (page - 1) * limit,
             take: limit,
             where: { userId },
             orderBy: { dueDate: 'asc' }
         });
     }
-
+    /**
+    *  Filters tasks by date range for a specific user.
+    * @param fromDate - The start date of the range. 
+    * @param toDate - The end date of the range.
+    * @param userID - The ID of the user whose tasks are being filtered.
+    * @param limit - The maximum number of tasks to return.
+    * @param page - The page number for pagination.
+    * @return An array of task objects that match the criteria.
+    */
+    async filterTasksByDate(
+        fromDate: string,
+        toDate: string,
+        userID: string,
+        limit: number,
+        page: number,
+    ) {
+        return this.prisma.user.findMany({
+            skip: (page - 1) * limit,
+            take: limit, // Pagination 
+            where: {
+                user_id: userID,
+                createdAt: {
+                    gte: new Date(fromDate),
+                    lte: new Date(toDate),
+                },
+            },
+        });
+    }
     /**
          * Updates a task by its ID.
          * @param id - The ID of the task to update.
@@ -63,8 +90,8 @@ class TaskService {
 
         return this.prisma.task.update({
             where: {
-                 task_id: taskId,
-                 userId: userId
+                task_id: taskId,
+                userId: userId
             },
             data
         });
@@ -82,6 +109,8 @@ class TaskService {
             where: { task_id: taskId }
         });
     }
+
+
 }
 
 export default TaskService;
