@@ -1,0 +1,561 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Mini Trello API",
+      "description": "API for managing tasks with authentication",
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000",
+        "description": "Local development server"
+      },
+      {
+        "url": "https://mentorled_five.onrender.com",
+        "description": "Production server"
+      }
+    ],
+    "tags": [
+      {
+        "name": "Authentication",
+        "description": "User signup and login"
+      },
+      {
+        "name": "Tasks",
+        "description": "Task management operations"
+      }
+    ],
+    "paths": {
+      "/auth/signup": {
+        "post": {
+          "tags": ["Authentication"],
+          "summary": "Register a new user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "example": "John Doe"
+                    },
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "john@example.com"
+                    },
+                    "password": {
+                      "type": "string",
+                      "format": "password",
+                      "example": "securePassword123"
+                    }
+                  },
+                  "required": ["name", "email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "User created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "User created successfully"
+                      },
+                      "user": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Bad request (missing fields or user exists)"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/auth/login": {
+        "post": {
+          "tags": ["Authentication"],
+          "summary": "Authenticate a user",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": {
+                      "type": "string",
+                      "format": "email",
+                      "example": "john@example.com"
+                    },
+                    "password": {
+                      "type": "string",
+                      "format": "password",
+                      "example": "securePassword123"
+                    }
+                  },
+                  "required": ["email", "password"]
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Login successful",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Login successful"
+                      },
+                      "user": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "clxyz123..."
+                          },
+                          "name": {
+                            "type": "string",
+                            "example": "John Doe"
+                          },
+                          "email": {
+                            "type": "string",
+                            "example": "john@example.com"
+                          }
+                        }
+                      },
+                      "token": {
+                        "type": "string",
+                        "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Missing credentials"
+            },
+            "401": {
+              "description": "Invalid password"
+            },
+            "404": {
+              "description": "User not found"
+            },
+            "500": {
+              "description": "Internal server error"
+            }
+          }
+        }
+      },
+      "/tasks": {
+        "post": {
+          "tags": ["Tasks"],
+          "summary": "Create a new task",
+          "security": [{"BearerAuth": []}],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTaskDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Task created successfully",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Task created successfully"
+                      },
+                      "newTask": {
+                        "$ref": "#/components/schemas/Task"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Missing title/description or invalid date"
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "500": {
+              "description": "Failed to create task"
+            }
+          }
+        },
+        "get": {
+          "tags": ["Tasks"],
+          "summary": "Get all tasks for the user",
+          "security": [{"BearerAuth": []}],
+          "parameters": [
+            {
+              "name": "limit",
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 10
+              },
+              "description": "Pagination limit"
+            },
+            {
+              "name": "offset",
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 0
+              },
+              "description": "Pagination offset"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "List of tasks",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Task"
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "500": {
+              "description": "Failed to retrieve tasks"
+            }
+          }
+        }
+      },
+      "/tasks/filter": {
+        "get": {
+          "tags": ["Tasks"],
+          "summary": "Filter tasks by date range",
+          "security": [{"BearerAuth": []}],
+          "parameters": [
+            {
+              "name": "fromDate",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "date",
+                "example": "2024-01-01"
+              }
+            },
+            {
+              "name": "toDate",
+              "in": "query",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "format": "date",
+                "example": "2024-12-31"
+              }
+            },
+            {
+              "name": "limit",
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 10
+              }
+            },
+            {
+              "name": "page",
+              "in": "query",
+              "schema": {
+                "type": "integer",
+                "default": 1
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Filtered tasks",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Tasks in the range 2024-01-01 to 2024-12-31"
+                      },
+                      "tasks": {
+                        "type": "array",
+                        "items": {
+                          "$ref": "#/components/schemas/Task"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Missing/invalid dates"
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "500": {
+              "description": "Failed to filter tasks"
+            }
+          }
+        }
+      },
+      "/tasks/{id}": {
+        "get": {
+          "tags": ["Tasks"],
+          "summary": "Get a task by ID",
+          "security": [{"BearerAuth": []}],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Task details",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Missing task ID"
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "Task not found"
+            },
+            "500": {
+              "description": "Failed to retrieve task"
+            }
+          }
+        },
+        "patch": {
+          "tags": ["Tasks"],
+          "summary": "Update a task",
+          "security": [{"BearerAuth": []}],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "requestBody": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateTaskDto"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Updated task",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Task"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid data"
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "Task not found"
+            },
+            "500": {
+              "description": "Failed to update task"
+            }
+          }
+        },
+        "delete": {
+          "tags": ["Tasks"],
+          "summary": "Delete a task",
+          "security": [{"BearerAuth": []}],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Task deleted",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "message": {
+                        "type": "string",
+                        "example": "Task deleted successfully"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Missing task ID"
+            },
+            "401": {
+              "description": "Unauthorized"
+            },
+            "404": {
+              "description": "Task not found"
+            },
+            "500": {
+              "description": "Failed to delete task"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "User": {
+          "type": "object",
+          "properties": {
+            "user_id": {
+              "type": "string"
+            },
+            "name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "writeOnly": true
+            }
+          }
+        },
+        "CreateTaskDto": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "example": "Complete project"
+            },
+            "description": {
+              "type": "string",
+              "example": "Finish the API documentation"
+            },
+            "dueDate": {
+              "type": "string",
+              "format": "date-time",
+              "example": "2024-12-31T23:59:59Z"
+            },
+            "completed": {
+              "type": "boolean",
+              "default": false
+            },
+            "priority": {
+              "type": "string",
+              "enum": ["LOW", "MEDIUM", "HIGH"],
+              "default": "LOW"
+            }
+          },
+          "required": ["title", "description"]
+        },
+        "Task": {
+          "type": "object",
+          "properties": {
+            "task_id": {
+              "type": "string"
+            },
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "dueDate": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "completed": {
+              "type": "boolean"
+            },
+            "priority": {
+              "type": "string",
+              "enum": ["LOW", "MEDIUM", "HIGH"]
+            },
+            "user_id": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    }
+  }

@@ -6,12 +6,18 @@ import TaskController from './controllers/taskController'
 import UserService from './services/user.service'
 import TaskService from './services/task.service'
 import authMiddleware from './middleware/authMiddleware'
+import swaggerUi from 'swagger-ui-express'
+import swaggerDocument from './docs/swagger.json'
+
 import morgan from 'morgan'
 
 const app = express()
 const PORT = process.env.PORT || 3000
 app.use(cors())
 app.use(express.json())
+
+// Server Swagger docs
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // Database conn logic 
 const prisma = new PrismaClient()
