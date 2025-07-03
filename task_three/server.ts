@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv"
 // Swagger serve related stuff 
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from "./docs/spec.json"
+import swaggerDocument from "./docs/specs.json"
 const PORT = process.env.PORT || 8000
 const app = express()
 
