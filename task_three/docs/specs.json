@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://mentorled_taskthree.onrender.com/api/v1",
+            "url": "https://mentorled-three.onrender.com/api/v1",
             "description": "Base URL for the API"
         }
     ],
