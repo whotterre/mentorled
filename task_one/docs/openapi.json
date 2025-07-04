@@ -7,7 +7,7 @@
     },
     "servers": [
         {
-            "url": "https://mentorled.onrender.com"
+            "url": "https://mentorled.onrender.com/api/v1"
         }
     ],
     "paths": {
