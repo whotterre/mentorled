@@ -5,6 +5,11 @@
         "version": "1.0.0",
         "description": "A simple API to manage quotes"
     },
+    "servers": [
+        {
+            "url": "https://mentorled.onrender.com"
+        }
+    ],
     "paths": {
         "/quotes/new": {
             "post": {
